@@ -3,5 +3,5 @@ pandas
 plotly.express
 openai
 boto3
-jobspy
+python-jobspy
 nltk
