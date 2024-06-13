@@ -157,7 +157,7 @@ def start_ai_generate_skills():
   client = OpenAI(
   #   organization='YOUR_ORG_ID',
   #   project='$PROJECT_ID',
-    api_key = st.secrets["API-KEY"]
+    api_key = st.secrets["API_KEY"]
   )
   prompt = f"""
           Give me strictly 70 top skills needed for {job_title}
