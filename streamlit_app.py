@@ -3,11 +3,13 @@ from pandas import DataFrame, read_csv
 from plotly.express import line, bar
 import boto3
 from os import path
-from nltk.data import find
-from nltk import download
+
+
 
 # Define a function to check and download NLTK data
 def check_and_download_nltk_data():
+    from nltk.data import find
+    import nltk
     datasets = {
         'punkt': 'tokenizers/punkt',
         'stopwords': 'corpora/stopwords',
@@ -21,7 +23,7 @@ def check_and_download_nltk_data():
             st.write(f"{dataset_name} is already downloaded.")
         except LookupError:
             st.write(f"{dataset_name} not found. Downloading...")
-            download(dataset_name)
+            nltk.download(dataset_name)
 
 # Ensure necessary NLTK data is downloaded
 check_and_download_nltk_data()
