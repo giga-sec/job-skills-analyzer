@@ -3,7 +3,8 @@ from pandas import DataFrame, read_csv
 from plotly.express import line, bar
 import boto3
 from os import path
-from nltk.data import find, download
+from nltk.data import find
+from nltk import download
 
 # Define a function to check and download NLTK data
 def check_and_download_nltk_data():
