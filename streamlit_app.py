@@ -3,10 +3,13 @@ from pandas import DataFrame, read_csv
 from plotly.express import line, bar
 import boto3
 from os import path
+from nltk import download
+download('stopwords')
+download('wordnet')
+download('punkt')
 
 def tokenize_lemmatize(text):
-    from nltk import download
-    download('stopwords')
+    
     from nltk.corpus import stopwords
     from nltk.stem import WordNetLemmatizer
     from string import punctuation
