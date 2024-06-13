@@ -4,8 +4,6 @@ from plotly.express import line, bar
 import boto3
 from os import path
 
-
-
 # # Define a function to check and download NLTK data
 # def check_and_download_nltk_data():
 #     from nltk.data import find
@@ -28,6 +26,8 @@ from os import path
 # # Ensure necessary NLTK data is downloaded
 # check_and_download_nltk_data()
 
+import nltk
+nltk.download('wordnet')
 
 def tokenize_lemmatize(text):
     
