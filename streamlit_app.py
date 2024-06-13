@@ -6,27 +6,27 @@ from os import path
 
 
 
-# Define a function to check and download NLTK data
-def check_and_download_nltk_data():
-    from nltk.data import find
-    import nltk
-    datasets = {
-        'punkt': 'tokenizers/punkt',
-        'stopwords': 'corpora/stopwords',
-        'wordnet': 'corpora/wordnet',
-        'averaged_perceptron_tagger': 'taggers/averaged_perceptron_tagger'
-    }
+# # Define a function to check and download NLTK data
+# def check_and_download_nltk_data():
+#     from nltk.data import find
+#     import nltk
+#     datasets = {
+#         'punkt': 'tokenizers/punkt',
+#         'stopwords': 'corpora/stopwords',
+#         'wordnet': 'corpora/wordnet',
+#         'averaged_perceptron_tagger': 'taggers/averaged_perceptron_tagger'
+#     }
 
-    for dataset_name, dataset_path in datasets.items():
-        try:
-            find(dataset_path)
-            st.write(f"{dataset_name} is already downloaded.")
-        except LookupError:
-            st.write(f"{dataset_name} not found. Downloading...")
-            nltk.download(dataset_name)
+#     for dataset_name, dataset_path in datasets.items():
+#         try:
+#             find(dataset_path)
+#             st.write(f"{dataset_name} is already downloaded.")
+#         except LookupError:
+#             st.write(f"{dataset_name} not found. Downloading...")
+#             nltk.download(dataset_name)
 
-# Ensure necessary NLTK data is downloaded
-check_and_download_nltk_data()
+# # Ensure necessary NLTK data is downloaded
+# check_and_download_nltk_data()
 
 
 def tokenize_lemmatize(text):
