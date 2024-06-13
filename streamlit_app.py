@@ -1,7 +1,7 @@
 import streamlit as st
 from pandas import DataFrame, read_csv
 from plotly.express import line, bar
-import boto3
+from boto3 import client
 from os import path
 from nltk import download
 download('stopwords')
