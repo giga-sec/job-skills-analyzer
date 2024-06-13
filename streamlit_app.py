@@ -27,6 +27,7 @@ from os import path
 # check_and_download_nltk_data()
 
 import nltk
+nltk.data.path.append('./nltkdata')
 nltk.download('wordnet')
 
 def tokenize_lemmatize(text):
