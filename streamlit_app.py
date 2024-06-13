@@ -30,11 +30,12 @@ from os import path
 
 
 def tokenize_lemmatize(text):
-    
+    import nltk
     from nltk.corpus import stopwords
     from nltk.stem import WordNetLemmatizer
     from string import punctuation
     from nltk.tokenize import word_tokenize
+    nltk.data.path.append('./nltkdata')
     # Tokenize the text
     stop_words = set(stopwords.words("english"))
     nltk = WordNetLemmatizer()
