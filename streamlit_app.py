@@ -4,6 +4,12 @@ from plotly.express import line, bar
 import boto3
 from os import path
 
+import nltk
+
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+nltk.download('averaged_perceptron_tagger')
 
 
 def tokenize_lemmatize(text):
