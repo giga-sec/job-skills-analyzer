@@ -3,7 +3,7 @@ from pandas import DataFrame, read_csv
 from plotly.express import line, bar
 import boto3
 from os import path
-from nltk.data import find
+from nltk.data import find, download
 
 # Define a function to check and download NLTK data
 def check_and_download_nltk_data():
@@ -20,7 +20,7 @@ def check_and_download_nltk_data():
             st.write(f"{dataset_name} is already downloaded.")
         except LookupError:
             st.write(f"{dataset_name} not found. Downloading...")
-            nltk.download(dataset_name)
+            download(dataset_name)
 
 # Ensure necessary NLTK data is downloaded
 check_and_download_nltk_data()
