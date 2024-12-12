@@ -10,27 +10,24 @@ from nltk import download
 path.append('./nltkdata')
 download('wordnet')
 
+
 def tokenize_lemmatize(text):
-    from re import sub
-    from string import punctuation
-    from nltk.corpus import stopwords
-    from nltk.stem import WordNetLemmatizer
-    from nltk.tokenize import word_tokenize
-    ### <----                         ---> ###
+    if not isinstance(text, str):  # Ensure text is a string
+        return ""  # Return empty string if not a string
+
     # 1. Tokenize the text into individual words
     text = sub(r'[-/]', ' ', text)  # Replace special characters with spaces
-    stop_words = set(stopwords.words("english"))
-    nltk = WordNetLemmatizer()
-    tokens = word_tokenize(str(text).lower())
+    tokens = word_tokenize(text.lower())  # Tokenize and make lowercase
 
-    # 2. Remove punctuation and stop words
-    # 3. Perform Lemmatization on each word, this reduces words to their base form.
-    tokens = [nltk.lemmatize(token) for token in tokens if token not in stop_words
-                  and token not in punctuation]
+    # 2. Remove punctuation and stop words, and lemmatize each word
+    tokens = [
+        nltk_lem.lemmatize(token) for token in tokens 
+        if token not in stop_words and token not in punctuation
+    ]
 
-    # 4. Join the tokens back into a string
+    # 3. Join the tokens back into a string
     processed_text = " ".join(tokens)
-    return processed_text  # <- str
+    return processed_text # <- str
 
 # Function to count occurrences of each skill in the job description
 def count_skill_occurrences(job_description, skills):
@@ -65,7 +62,7 @@ def start_main_function_analysis():
     # Tokenize and Lemmatize First
     temp_df = ORIGINAL_DF
     temp_df["lemmatized_text"] = ORIGINAL_DF["description"].apply(tokenize_lemmatize)
-    temp_df["lemmatized_text"].to_csv(f"csv\\lemmatized_{job_title}.csv", encoding='utf-8', quoting=QUOTE_NONNUMERIC, escapechar="\\", index=False) # to_xlsx
+    # temp_df["lemmatized_text"].to_csv(f"csv\\lemmatized_{job_title}.csv", encoding='utf-8', quoting=QUOTE_NONNUMERIC, escapechar="\\", index=False) # to_xlsx
 
     # Initialize skill occurrences dictionary
     skill_occurrences: list[tuple[str, int]] = [(skill, 0) for skill in skills_list]
