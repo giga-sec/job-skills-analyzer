@@ -4,27 +4,6 @@ from plotly.express import line, bar
 import boto3
 from os import path
 
-# # Define a function to check and download NLTK data
-# def check_and_download_nltk_data():
-#     from nltk.data import find
-#     import nltk
-#     datasets = {
-#         'punkt': 'tokenizers/punkt',
-#         'stopwords': 'corpora/stopwords',
-#         'wordnet': 'corpora/wordnet',
-#         'averaged_perceptron_tagger': 'taggers/averaged_perceptron_tagger'
-#     }
-
-#     for dataset_name, dataset_path in datasets.items():
-#         try:
-#             find(dataset_path)
-#             st.write(f"{dataset_name} is already downloaded.")
-#         except LookupError:
-#             st.write(f"{dataset_name} not found. Downloading...")
-#             nltk.download(dataset_name)
-
-# # Ensure necessary NLTK data is downloaded
-# check_and_download_nltk_data()
 
 from nltk.data import path
 from nltk import download
@@ -86,7 +65,7 @@ def start_main_function_analysis():
     # Tokenize and Lemmatize First
     temp_df = ORIGINAL_DF
     temp_df["lemmatized_text"] = ORIGINAL_DF["description"].apply(tokenize_lemmatize)
-    # temp_df["lemmatized_text"].to_csv(f"csv\\lemmatized_{job_title}.csv", encoding='utf-8', quoting=QUOTE_NONNUMERIC, escapechar="\\", index=False) # to_xlsx
+    temp_df["lemmatized_text"].to_csv(f"csv\\lemmatized_{job_title}.csv", encoding='utf-8', quoting=QUOTE_NONNUMERIC, escapechar="\\", index=False) # to_xlsx
 
     # Initialize skill occurrences dictionary
     skill_occurrences: list[tuple[str, int]] = [(skill, 0) for skill in skills_list]
