@@ -5,12 +5,6 @@ import boto3
 from os import path
 
 
-from nltk.data import path
-from nltk import download
-path.append('./nltkdata')
-download('wordnet')
-
-
 def tokenize_lemmatize(text):
     from re import sub
     from string import punctuation
@@ -56,7 +50,7 @@ def lemmatize_skills(skills_list):
     lemmatized_skills = [lemmatizer.lemmatize(skill.lower()) for skill in skills_list]
     return lemmatized_skills
 
-def start_main_function_analysis():
+def start_main_function_analysis(ORIGINAL_DF):
   from csv import QUOTE_NONNUMERIC
   global JOBSKILLS_DF, SIGNAL
   if (skills_list_txtarea != "") and (job_title != ""):
@@ -135,41 +129,6 @@ def barChartAutomatic(dataframe, index_start, index_end):
 
 
 
-####################
-####################
-## Start of BOTO3 ##
-def file_exists_in_s3(bucket_name, filename):
-    from botocore.exceptions import ClientError
-    try:
-        s3_client.head_object(Bucket=bucket_name, Key=filename)
-        print("file_exists_in_s3: True")
-        return True
-    except ClientError as e:
-        # If a 404 error is raised, the file does not exist
-        if e.response['Error']['Code'] == '404':
-            print("file_exists_in_s3: False")
-            return False
-        # For other errors, you might want to raise an exception
-        else:
-            raise e
-
-def download_csv_from_s3(bucket_name, filename):
-    # response = s3_client.get_object(Bucket='csvfilesforjobs', Key=filename)
-    # return response['Body'].read()    
-    response = s3_client.get_object(Bucket=bucket_name, Key=filename)
-    return response['Body'].read()
-
-def upload_csv_to_s3(dataframe, bucket_name, filename):
-    from io import StringIO
-    csv_buffer = StringIO()
-    dataframe.to_csv(csv_buffer, index=False)  # Save DataFrame to CSV format in the buffer
-    csv_buffer.seek(0)
-
-    s3_client.put_object(Body=csv_buffer.getvalue(), Bucket=bucket_name, Key=filename)
-
-## End of BOTO3 ##
-##################
-##################
 
 
 
@@ -283,8 +242,6 @@ s3_client = boto3.client(
     's3',
     aws_access_key_id=AWS_ACCESS_KEY_ID,
     aws_secret_access_key=AWS_SECRET_ACCESS_KEY
-    
-    
 )
 # End of BOTO3
 
@@ -349,7 +306,7 @@ with st.sidebar:
   # This should only be enabled if the "st.button" Generate Data is clicked
   narrow_search_exists = st.session_state.get('narrow_search_input')
   if st.session_state.get('enable_generate_data') or narrow_search_exists:
-    start_main_function_analysis()
+    start_main_function_analysis(ORIGINAL_DF)
   #--> END OF BIGRAM ANALYSIS
   
   
