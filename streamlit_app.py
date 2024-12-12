@@ -12,6 +12,11 @@ download('wordnet')
 
 
 def tokenize_lemmatize(text):
+    from re import sub
+    from string import punctuation
+    from nltk.corpus import stopwords
+    from nltk.stem import WordNetLemmatizer
+    from nltk.tokenize import word_tokenize
     if not isinstance(text, str):  # Ensure text is a string
         return ""  # Return empty string if not a string
 
