@@ -310,8 +310,6 @@ with st.sidebar:
   # if st.session_state.get('enable_generate_data') or narrow_search_exists:
     start_main_function_analysis(ORIGINAL_DF)
     st.session_state['enable_generate_data'] = True
-  else:
-    st.session_state['enable_generate_data'] = False
   #--> END OF BIGRAM ANALYSIS
   
   
