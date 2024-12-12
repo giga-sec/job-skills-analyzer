@@ -8,8 +8,6 @@ nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
 
-
-
 def tokenize_lemmatize(text):
     from re import sub
     from string import punctuation
