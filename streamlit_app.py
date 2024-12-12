@@ -53,15 +53,6 @@ def tokenize_lemmatize(text):
     processed_text = " ".join(tokens)
     return processed_text  # <- str
 
-# Function to tokenize text into bigrams
-def generate_bigrams(text):
-    from nltk.util import ngrams
-    from nltk.tokenize import word_tokenize
-    tokens = word_tokenize(str(text).lower())
-    filtered_tokens = [word for word in tokens if word.isalnum()]
-    bigrams = list(ngrams(filtered_tokens, 2))
-    return bigrams
-
 # Function to count occurrences of each skill in the job description
 def count_skill_occurrences(job_description, skills):
     # from re import findall, escape, IGNORECASE
