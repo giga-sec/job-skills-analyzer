@@ -4,6 +4,7 @@ import pandas as pd
 from plotly.express import line, bar
 import boto3
 from os import path
+import io
 
 def tokenize_lemmatize(text):
     from re import sub
@@ -217,8 +218,8 @@ def download_csv_from_s3(bucket_name, filename):
     # response = s3_client.get_object(Bucket='csvfilesforjobs', Key=filename)
     # return response['Body'].read()    
     response = s3_client.get_object(Bucket=bucket_name, Key=filename)
-    csv_content = response['Body'].read()
-    return pd.read_csv(pd.compat.StringIO(csv_content.decode('utf-8')))
+    csv_content = response['Body'].read().decode('utf-8') 
+    return pd.read_csv(io.StringIO(csv_content))
 
 
 def upload_csv_to_s3(dataframe, bucket_name, filename):
