@@ -306,10 +306,8 @@ with st.sidebar:
   #--> START OF BIGRAM ANALYSIS
   # This should only be enabled if the "st.button" Generate Data is clicked
   narrow_search_exists = st.session_state.get('narrow_search_input')
-  if st.session_state.get('enable_generate_data'):
-  # if st.session_state.get('enable_generate_data') or narrow_search_exists:
+  if st.session_state.get('enable_generate_data') or narrow_search_exists:
     start_main_function_analysis(ORIGINAL_DF)
-    st.session_state['enable_generate_data'] = True
   #--> END OF BIGRAM ANALYSIS
   
   
