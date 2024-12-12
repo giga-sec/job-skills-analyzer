@@ -377,7 +377,8 @@ if SIGNAL == "Skills Analyzed Done":
           df_narrowed = df_narrowed[matched_jobs]
 
           st.write(f"{skill_counts[narrow_search_job_desc.lower()]} jobs found that contain '{narrow_search_job_desc}' as a skill for {job_title}")
-      st.dataframe(df_narrowed, hide_index=True, width=1500, height=300)
+      else:
+          st.dataframe(df_narrowed, hide_index=True, width=1500, height=300)
 
     # Bar Chart
     with tabs[1]: 
