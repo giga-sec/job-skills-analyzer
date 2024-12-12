@@ -5,10 +5,6 @@ import boto3
 from os import path
 import nltk
 
-# Set the NLTK data path to the local folder in the repository
-nltk_data_dir = './nltk_data'
-nltk.data.path.append(nltk_data_dir)
-
 # Check if the NLTK data files are available
 try:
     nltk.data.find('tokenizers/punkt')
