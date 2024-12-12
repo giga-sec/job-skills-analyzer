@@ -32,27 +32,24 @@ path.append('./nltkdata')
 download('wordnet')
 
 def tokenize_lemmatize(text):
+    from re import sub
+    from string import punctuation
     from nltk.corpus import stopwords
     from nltk.stem import WordNetLemmatizer
-    from string import punctuation
     from nltk.tokenize import word_tokenize
-    #nltk.data.path.append('./nltkdata')
-    from nltk.data import path
-    path.append("./nltkdata")
-    # Tokenize the text
+    ### <----                         ---> ###
+    # 1. Tokenize the text into individual words
+    text = sub(r'[-/]', ' ', text)  # Replace special characters with spaces
     stop_words = set(stopwords.words("english"))
     nltk = WordNetLemmatizer()
     tokens = word_tokenize(str(text).lower())
 
-    # Remove punctuation and stop words then lemmatize
-    # Lemmatization helps to reduce words to their base or dictionary form.
+    # 2. Remove punctuation and stop words
+    # 3. Perform Lemmatization on each word, this reduces words to their base form.
     tokens = [nltk.lemmatize(token) for token in tokens if token not in stop_words
                   and token not in punctuation]
 
-    # Convert the list to a set to remove duplicates, then back to a list
-    # tokens = list(set(tokens))
-
-    # Join the tokens back into a string
+    # 4. Join the tokens back into a string
     processed_text = " ".join(tokens)
     return processed_text  # <- str
 
