@@ -153,32 +153,29 @@ def barChartAutomatic(dataframe, index_start, index_end):
 ###############################
 
 
-def start_ai_generate_skills():
+def start_ai_generate_skills(job_title):
   from openai import OpenAI
-  client = OpenAI(
-  #   organization='YOUR_ORG_ID',
-  #   project='$PROJECT_ID',
-    api_key = st.secrets["API_KEY"]
+  client = OpenAI(api_key = st.secrets["API_KEY"]
+  completion = client.chat.completions.create(
+      model="gpt-4o-mini",
+      messages=[
+          {"role": "system", "content": "You are a Job Skills Generator."},
+          {
+              "role": "user",
+              "content": f"""
+                Give me strictly 100 skills needed for {job_title}
+                No explanation.
+                Separate skills with commas.
+                One to Three Words only. Acronyms are allowed 
+                Strictly separate acronym and definition
+                Correct: Content Management System, CMS
+                Incorrect: Content Management System (CMS)"""
+          }
+      ]
   )
-  prompt = f"""
-          Give me strictly 70 top skills needed for {job_title}
-          No explanation. Don't use numbers to categorize skills
-          Separate skills with commas.
-          One to Three Words only. Acronyms are allowed.
-          Strictly separate acronym and definition
-          Correct: Content Management System, CMS
-          Incorrect: Content Management System (CMS)
-          ```Format Example
-          CMS, Content Management System, Japanese, Communication
-          ```
-            """
-  response = client.chat.completions.create(
-    model="gpt-4-0125-preview",
-    messages=[{"role": "user", "content": prompt}],
-    temperature=0.5,
-    max_tokens=500
-  )
-  return response.choices[0].message.content
+  print(completion.choices[0].message)
+  return completion.choices[0].message.content
+  # return "Java, Python, C++, JavaScript, TypeScript, SQL, NoSQL, Git, GitHub, GitLab, Agile, Scrum, Kanban, AWS, Azure, GCP, Docker, Kubernetes, CI/CD, Jenkins, REST API, GraphQL, HTML, CSS, React, Angular, Vue.js, Node.js, Express.js, Spring Boot, Hibernate, ORM, TDD, Unit Testing, Integration Testing, Data Structures, Algorithms, Design Patterns, OOP, Functional Programming, Microservices, Serverless, Linux, Shell Scripting, Bash, PowerShell, Performance Optimization, Refactoring, Code Review, Debugging, Troubleshooting, Scalability, Security, Authentication, Authorization, Encryption, HTTPS, SSL, TLS, Database Design, Caching, Load Balancing, Networking, TCP/IP, HTTP, WebSockets, Responsive Design, UX, UI, Accessibility, Internationalization, Localization"
 
 
 def start_scrape_jobs(job):
@@ -197,8 +194,8 @@ def start_scrape_jobs(job):
   jobs: DataFrame = scrape_jobs(
       site_name=["indeed"],
       search_term=job,
-      location="Cebu City",
-      distance=50, # miles
+      location="Mandaue City",
+      distance=2, # miles
       # is_remote= 
       results_wanted=500,
       # hours_old = six_months, # (only linkedin is hour specific, others round up to days old)
@@ -209,24 +206,11 @@ def start_scrape_jobs(job):
   print(jobs.head())
 
   columns_to_remove = [
-      "company_description",
-      "logo_photo_url",
-      "banner_photo_url",
-      "ceo_name",
-      "ceo_photo_url",
-      "company_num_employees",
-      "company_industry",
-      "company_addresses",
-      "company_url_direct",
-      "emails",
-      "currency",
-      "interval",
-      "min_amount",
-      "max_amount",
-      "job_type",
-      "company_revenue",
-      "site",
-      "job_url_direct",
+      "company_description", "logo_photo_url", "banner_photo_url",
+      "ceo_name", "ceo_photo_url", "company_num_employees",
+      "company_industry", "company_addresses", "company_url_direct",
+      "emails", "currency", "interval", "min_amount", "max_amount",
+      "job_type", "company_revenue", "site", "job_url_direct",
       "company_url",
   ]
 
@@ -285,15 +269,20 @@ s3_client = boto3.client(
 
 
 
-### START OF THE CODE
+##############################
+##############################
+##############################
+### START OF THE MAIN CODE ###
 st.set_page_config(layout="wide")
 SIGNAL = "Skills not Analyzed"
 LENGTH_SKILLS = 0
 ORIGINAL_DF = DataFrame()
-JOBSKILLS_DF = DataFrame()
+JOBSKILLS_DF = DataFrame() 
 response = ""
 
 print("\n\nRELOAD!!  RELOAD!!")
+
+
 
 #############################
 # >-- START OF SIDE BAR <-- #
@@ -307,11 +296,10 @@ with st.sidebar:
   # Get user input for job title
   job_title = st.text_input("Enter your job title:")
   
-
   is_disabled = True  # Initial state
   # Button to enable/disable text area of Skills
-  # file_exists = path.exists(f"csv\\original_{job_title}.csv")
-  # file_exists = download_csv_from_s3(BUCKET_NAME, f"original_{job_title}.csv")
+  
+  
   file_exists = file_exists_in_s3(BUCKET_NAME, f"original_{job_title}.csv")
     # print(f"File original_'{job_title}' already exists. Skipping...")
     # st.write("Scraped!")
@@ -327,26 +315,32 @@ with st.sidebar:
     st.write(f"{ORIGINAL_DF['title'].count()} jobs were scraped from Indeed.com")
 
   #--> Start of Job Skill TextArea
-  if st.session_state.get('generate'):
-    st.session_state['name'] = start_ai_generate_skills()
-  st.button('Generate Data', key='generate')
+  if (st.session_state.get('enable_ai_generate_skills')) and (job_title != ""):
+    st.session_state['name'] = start_ai_generate_skills(job_title)
+  st.button('Auto Skills Generate', key='enable_ai_generate_skills', help="AI Powered")
+  st.button('Generate Data/Chart', key='enable_generate_data', disabled=is_disabled,)
   skills_list_txtarea = st.text_area("Skills:", height=500, key='name', disabled=is_disabled,
                                         help="Input your skills here \nor click 'AI GENERATE SKILLS' to automatically generate skills for you")
   #--> End of Job Skill TextArea
 
 
-  #--> START OF BIGRAM ANALYSIS  
-  start_bigram_analysis()
+  #--> START OF BIGRAM ANALYSIS
+  # This should only be enabled if the "st.button" Generate Data is clicked
+  narrow_search_exists = st.session_state.get('narrow_search_input')
+  if st.session_state.get('enable_generate_data') or narrow_search_exists:
+    start_main_function_analysis()
   #--> END OF BIGRAM ANALYSIS
-
+  
+  
 # ^-- End of Sidebar --^ #
+##########################
 ##########################
 
 
 
 ###########################
 # Main Menu Section Below #
-st.markdown("""# Cebu City Job-Skills Real Time Analysis
+st.markdown("""# Mandaue City Job-Skills Real Time Analysis
             """)
 
 tabs = st.tabs(["Table Chart", "Bar Chart", "Line Chart"])
@@ -357,34 +351,57 @@ if SIGNAL == "Skills Analyzed Done":
   LENGTH_SKILLS = JOBSKILLS_DF['jobSkills'].count()
 
   # Display content based on selected tab
+  # THE CODES OF CHARTS ARE HERE
   if JOBSKILLS_DF.empty:
     print("Empty Values")
   else:
+    # Table Chart
     with tabs[0]:
       left, right = st.columns(2)
       with left:
+        st.markdown("Skills in-demand")
         tableChartExistingTrendSkills(JOBSKILLS_DF)
       with right:
+        st.markdown("Zero demand of skills")
         tableChartNotExistingTrendSkills(JOBSKILLS_DF)
       
       top_skill = JOBSKILLS_DF['jobSkills'].iloc[0]
       top_skill2 = JOBSKILLS_DF['jobSkills'].iloc[1]
       top_skill3 = JOBSKILLS_DF['jobSkills'].iloc[2]
+
+
       st.header("Narrow down your search here: ")
       st.write("Search the jobs that was mentioned as top skills ")
       narrow_search_job_desc = \
         st.text_input(f"""
           \nTry searching one of the top skill of {job_title}: "{top_skill}" or "{top_skill2}" or "{top_skill3}
-          \nExample: If you search for {top_skill}, then the table below will only show job links that has {top_skill} as a skill needed for that job"
-""", placeholder=f"Try typing: {top_skill}")
+          \nExample: 
+          \nIf you search for {top_skill}, 
+          \nthen the table below will only show job links that has {top_skill} as a skill needed for that job"
+""", placeholder=f"Try typing {top_skill}", key="narrow_search_input")
       st.write("\n\n\n")
       df_narrowed = ORIGINAL_DF
-      if narrow_search_job_desc != "":
-        df_narrowed = df_narrowed[df_narrowed['lemmatized_text'].str.contains(narrow_search_job_desc, case=False, na=False)]
-        st.write(f"{df_narrowed['title'].count()} jobs found that contains '{narrow_search_job_desc}' as a skill for {job_title}")
-      st.dataframe(df_narrowed, hide_index=True, width=1500, height=200)
+      # Below is filtering of job search based on skill inputted by user 
+      if (narrow_search_job_desc != ""):
+          # Initialize counts dictionary
+          skill_counts = {narrow_search_job_desc.lower(): 0}
+          matched_jobs = []  # List to keep track of matched jobs
 
-    with tabs[1]: # Bar Chart
+          # Iterate through the lemmatized_text column to count skill occurrences
+          for job_description in df_narrowed['lemmatized_text']:
+              counts = count_skill_occurrences(job_description, narrow_search_job_desc.lower())
+              skill_counts[narrow_search_job_desc.lower()] += counts[narrow_search_job_desc.lower()]
+
+              # Check if the count for the skill is greater than 0
+              matched_jobs.append(counts[narrow_search_job_desc.lower()] > 0)
+          
+          df_narrowed = df_narrowed[matched_jobs]
+
+          st.write(f"{skill_counts[narrow_search_job_desc.lower()]} jobs found that contain '{narrow_search_job_desc}' as a skill for {job_title}")
+      st.dataframe(df_narrowed, hide_index=True, width=1500, height=300)
+
+    # Bar Chart
+    with tabs[1]: 
       chartLeft, chartRight, selectedpoints1, selectedpoints2 = "", "", "", ""
       left, right = st.columns(2)
       start, end = 0, 10
@@ -396,17 +413,18 @@ if SIGNAL == "Skills Analyzed Done":
       while (inc_length_skills > 10) and (lastPosition_jobSkillsCount_value != 0):
         with left:
           chartLeft = barChartAutomatic(JOBSKILLS_DF, start, end)
-          st.plotly_chart(chartLeft, use_container_width=True)
+          st.plotly_chart(chartLeft, use_container_width=True, key=f"chartLeft_{start}")
         start += 10
         end += 10
         with right:
           chartRight = barChartAutomatic(JOBSKILLS_DF, start, end)
-          st.plotly_chart(chartRight, use_container_width=True)
+          st.plotly_chart(chartRight, use_container_width=True, key=f"chartRight_{start}")
         inc_length_skills -= 10
       if (inc_length_skills >= 10):
          chartLeft = barChartAutomatic(JOBSKILLS_DF, start, end)
-         st.plotly_chart(chartLeft, use_container_width=True)
+         st.plotly_chart(chartLeft, use_container_width=True, key=f"chartLeft_final")
     
+    # Line Chart
     with tabs[2]:
       df2_top20 = JOBSKILLS_DF.iloc[0:20]
       inc_length_skills = LENGTH_SKILLS
@@ -415,3 +433,8 @@ if SIGNAL == "Skills Analyzed Done":
                     color="jobSkills", markers=True)
       # fig.update_traces(textposition="middle center", text=df2_top20["count"].astype(str))
       st.plotly_chart(fig, use_container_width=True)
+
+
+# END OF Main Menu Section #
+############################
+############################
