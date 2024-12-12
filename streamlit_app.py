@@ -14,22 +14,20 @@ def tokenize_lemmatize(text):
     from nltk.corpus import stopwords
     from nltk.stem import WordNetLemmatizer
     from nltk.tokenize import word_tokenize
-    if not isinstance(text, str):  # Ensure text is a string
-        return ""  # Return empty string if not a string
-
     # 1. Tokenize the text into individual words
     text = sub(r'[-/]', ' ', text)  # Replace special characters with spaces
-    tokens = word_tokenize(text.lower())  # Tokenize and make lowercase
+    stop_words = set(stopwords.words("english"))
+    nltk = WordNetLemmatizer()
+    tokens = word_tokenize(str(text).lower())
 
-    # 2. Remove punctuation and stop words, and lemmatize each word
-    tokens = [
-        nltk_lem.lemmatize(token) for token in tokens 
-        if token not in stop_words and token not in punctuation
-    ]
+    # 2. Remove punctuation and stop words
+    # 3. Perform Lemmatization on each word, this reduces words to their base form.
+    tokens = [nltk.lemmatize(token) for token in tokens if token not in stop_words
+                  and token not in punctuation]
 
-    # 3. Join the tokens back into a string
+    # 4. Join the tokens back into a string
     processed_text = " ".join(tokens)
-    return processed_text # <- str
+    return processed_text  # <- str
 
 # Function to count occurrences of each skill in the job description
 def count_skill_occurrences(job_description, skills):
