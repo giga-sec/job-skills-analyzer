@@ -116,6 +116,9 @@ def start_main_function_analysis():
 ########################################
 
 
+#################################
+# START OF FUNCTIONS FOR CHARTS #
+
 def tableChartExistingTrendSkills(dataframe):
   existing_skillTrend = dataframe.query('count > 0')
   st.dataframe(existing_skillTrend, hide_index=True, width=300)
@@ -142,6 +145,12 @@ def barChartAutomatic(dataframe, index_start, index_end):
   )
   ## Display the chart using Streamlit
   return chart
+  
+
+
+# END OF FUNCTIONS FOR CHARTS #
+###############################
+###############################
 
 
 def start_ai_generate_skills():
