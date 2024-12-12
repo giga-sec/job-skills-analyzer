@@ -55,18 +55,12 @@ def tokenize_lemmatize(text):
 
 # Function to count occurrences of each skill in the job description
 def count_skill_occurrences(job_description, skills):
-    # from re import findall, escape, IGNORECASE
-  #     Steps:
-    # Initialize a dictionary to store counts for each skill.
-    # For each skill, use regular expressions to find and count occurrences in the job description.
-    # Return the dictionary of skill counts.
+    if isinstance(skills, str):
+        skills = [skills]  # Convert single skill string to a list
+
     skill_counts = {skill: 0 for skill in skills}
     job_description_tokens = set(job_description.split())
 
-    # for skill in skills:
-    #     occurrences = len(re.findall(r'\b' + re.escape(skill) + r'\b', str(job_description), re.IGNORECASE))
-    #     skill_counts[skill] = occurrences
-    # return skill_counts
     for skill in skills:
         skill_tokens = set(skill.lower().split())  # Tokenize and convert skill to a set
         if skill_tokens.issubset(job_description_tokens):
@@ -81,16 +75,10 @@ def lemmatize_skills(skills_list):
     lemmatized_skills = [lemmatizer.lemmatize(skill.lower()) for skill in skills_list]
     return lemmatized_skills
 
-
-# Function to count occurrences of bigrams in the text
-def count_bigram_occurrences(text, bigram):
-    return text.count(bigram)
-
-
-def start_bigram_analysis():
+def start_main_function_analysis():
   from csv import QUOTE_NONNUMERIC
   global JOBSKILLS_DF, SIGNAL
-  if skills_list_txtarea != "":
+  if (skills_list_txtarea != "") and (job_title != ""):
     skills_list = [skill.strip() for skill in skills_list_txtarea.split(",")]
     skills_list = lemmatize_skills(skills_list)
 
@@ -98,15 +86,11 @@ def start_bigram_analysis():
     # Tokenize and Lemmatize First
     temp_df = ORIGINAL_DF
     temp_df["lemmatized_text"] = ORIGINAL_DF["description"].apply(tokenize_lemmatize)
-    temp_df["lemmatized_text"].to_csv(f"csv\\lemmatized_{job_title}.csv", encoding='utf-8', quoting=QUOTE_NONNUMERIC, escapechar="\\", index=False) # to_xlsx
+    # temp_df["lemmatized_text"].to_csv(f"csv\\lemmatized_{job_title}.csv", encoding='utf-8', quoting=QUOTE_NONNUMERIC, escapechar="\\", index=False) # to_xlsx
 
     # Initialize skill occurrences dictionary
-    # skill_occurrences: dict[str, int] = {skill: 0 for skill in skills_list}
     skill_occurrences: list[tuple[str, int]] = [(skill, 0) for skill in skills_list]
-    # ^-- Example: dict["Content Writer": 20]
-
-    # Initialize bigram occurrences dictionary
-    bigram_occurrences = {}
+    # ^-- Result Example: dict["Content Writer": 20]
 
     # Iterate over each job description
     for index, row in temp_df.iterrows():
@@ -121,23 +105,15 @@ def start_bigram_analysis():
                     break
             else:
                 skill_occurrences.append((skill, count))
-        
-        # Count occurrences of each bigram
-        # bigrams = generate_bigrams(job_description)
-        # for bigram in bigrams:
-        #     if bigram in bigram_occurrences:
-        #         bigram_occurrences[bigram] += 1
-        #     else:
-        #         bigram_occurrences[bigram] = 1
-
 
     # Saving data
     df_jobTitles_count = DataFrame(skill_occurrences, columns=['jobSkills', 'count'], index=None)
     JOBSKILLS_DF = df_jobTitles_count.sort_values(by='count', ascending=False)
     SIGNAL = "Skills Analyzed Done"
 
-
-####### ^-- FUNCTIONS FOR BIGRAM ANALYSIS ########### 
+# END OF FUNCTIONS FOR NLP ANALYSIS #
+########################################
+########################################
 
 
 def tableChartExistingTrendSkills(dataframe):
