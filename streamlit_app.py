@@ -4,13 +4,15 @@ from plotly.express import line, bar
 import boto3
 from os import path
 import nltk
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
 
 # Check if the NLTK data files are available
 try:
     nltk.data.find('tokenizers/punkt')
     nltk.data.find('corpora/stopwords')
     nltk.data.find('corpora/wordnet')
-    nltk.data.find('omw-1.4')
     st.write("NLTK data files are ready!")
 except LookupError as e:
     st.write("NLTK data files are missing! Please check the repository path.")
