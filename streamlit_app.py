@@ -155,7 +155,7 @@ def barChartAutomatic(dataframe, index_start, index_end):
 
 def start_ai_generate_skills(job_title):
   from openai import OpenAI
-  client = OpenAI(api_key = st.secrets["API_KEY"]
+  client = OpenAI(api_key = st.secrets["API_KEY"])
   completion = client.chat.completions.create(
       model="gpt-4o-mini",
       messages=[
