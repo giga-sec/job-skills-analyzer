@@ -4,9 +4,21 @@ from plotly.express import line, bar
 import boto3
 from os import path
 import nltk
-nltk.download('stopwords') 
-nltk.download('wordnet') 
-nltk.download('punkt')
+
+# Set the NLTK data path to the local folder in the repository
+nltk_data_dir = './nltk_data'
+nltk.data.path.append(nltk_data_dir)
+
+# Check if the NLTK data files are available
+try:
+    nltk.data.find('tokenizers/punkt')
+    nltk.data.find('corpora/stopwords')
+    nltk.data.find('corpora/wordnet')
+    nltk.data.find('omw-1.4')
+    st.write("NLTK data files are ready!")
+except LookupError as e:
+    st.write("NLTK data files are missing! Please check the repository path.")
+    exit(1)
 
 def tokenize_lemmatize(text):
     from re import sub
