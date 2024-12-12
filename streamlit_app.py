@@ -1,5 +1,5 @@
 import streamlit as st
-from pandas import DataFrame, read_csv
+from pandas import DataFrame, read_csv, compat
 from plotly.express import line, bar
 import boto3
 from os import path
@@ -216,7 +216,8 @@ def download_csv_from_s3(bucket_name, filename):
     # response = s3_client.get_object(Bucket='csvfilesforjobs', Key=filename)
     # return response['Body'].read()    
     response = s3_client.get_object(Bucket=bucket_name, Key=filename)
-    return response['Body'].read()
+    csv_content = response['Body'].read()
+    return read_csv(compat.StringIO(csv_content.decode('utf-8')))
 
 def upload_csv_to_s3(dataframe, bucket_name, filename):
     from io import StringIO
