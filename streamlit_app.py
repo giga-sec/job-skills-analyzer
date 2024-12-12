@@ -4,7 +4,6 @@ from plotly.express import line, bar
 import boto3
 from os import path
 import nltk
-nltk.data.path.append('./nltkdata')
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
