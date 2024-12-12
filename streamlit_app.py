@@ -26,12 +26,12 @@ from os import path
 # # Ensure necessary NLTK data is downloaded
 # check_and_download_nltk_data()
 
-import nltk
-nltk.data.path.append('./nltkdata')
-nltk.download('wordnet')
+from nltk.data import path.append
+from nltk import download
+path.append('./nltkdata')
+download('wordnet')
 
 def tokenize_lemmatize(text):
-    
     from nltk.corpus import stopwords
     from nltk.stem import WordNetLemmatizer
     from string import punctuation
