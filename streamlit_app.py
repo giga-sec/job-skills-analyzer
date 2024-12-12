@@ -296,12 +296,8 @@ with st.sidebar:
   #--> Start of Job Skill TextArea
   if (st.session_state.get('enable_ai_generate_skills')) and (job_title != ""):
     st.session_state['name'] = start_ai_generate_skills(job_title)
-  if 'enable_generate_data' not in st.session_state:
-    st.session_state['enable_generate_data'] = False 
   st.button('Auto Skills Generate', key='enable_ai_generate_skills', help="AI Powered")
-  if st.button("Generate Data/Chart"):
-    st.session_state['enable_generate_data'] = True  # Persist the button state
-    start_main_function_analysis(ORIGINAL_DF)
+  st.button('Generate Data/Chart', key='enable_generate_data', disabled=is_disabled,)
   skills_list_txtarea = st.text_area("Skills:", height=500, key='name', disabled=is_disabled,
                                         help="Input your skills here \nor click 'AI GENERATE SKILLS' to automatically generate skills for you")
   #--> End of Job Skill TextArea
@@ -310,10 +306,10 @@ with st.sidebar:
   #--> START OF BIGRAM ANALYSIS
   # This should only be enabled if the "st.button" Generate Data is clicked
   narrow_search_exists = st.session_state.get('narrow_search_input')
-  # if st.session_state.get('enable_generate_data'):
+  if st.session_state.get('enable_generate_data'):
   # if st.session_state.get('enable_generate_data') or narrow_search_exists:
-    # start_main_function_analysis(ORIGINAL_DF)
-    # st.session_state['enable_generate_data'] = True
+    start_main_function_analysis(ORIGINAL_DF)
+    st.session_state['enable_generate_data'] = True
   #--> END OF BIGRAM ANALYSIS
   
   
