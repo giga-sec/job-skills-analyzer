@@ -5,6 +5,9 @@ from plotly.express import line, bar
 import boto3
 import io
 
+AWS_ACCESS_KEY_ID = 'AKIA47CR2X53MPHXXO4C'
+AWS_SECRET_ACCESS_KEY = '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'
+BUCKET_NAME = 'csvfilesforjobs'
 
 def tokenize_lemmatize(text):
     from re import sub
@@ -153,6 +156,7 @@ def start_ai_generate_skills(job_title):
   # )
   # print(completion.choices[0].message)
   # return completion.choices[0].message.content
+  
   return "Java, Python, C++, JavaScript, TypeScript, SQL, NoSQL, Git, GitHub, GitLab, Agile, Scrum, Kanban, AWS, Azure, GCP, Docker, Kubernetes, CI/CD, Jenkins, REST API, GraphQL, HTML, CSS, React, Angular, Vue.js, Node.js, Express.js, Spring Boot, Hibernate, ORM, TDD, Unit Testing, Integration Testing, Data Structures, Algorithms, Design Patterns, OOP, Functional Programming, Microservices, Serverless, Linux, Shell Scripting, Bash, PowerShell, Performance Optimization, Refactoring, Code Review, Debugging, Troubleshooting, Scalability, Security, Authentication, Authorization, Encryption, HTTPS, SSL, TLS, Database Design, Caching, Load Balancing, Networking, TCP/IP, HTTP, WebSockets, Responsive Design, UX, UI, Accessibility, Internationalization, Localization"
 
 
@@ -231,10 +235,6 @@ def upload_csv_to_s3(dataframe, bucket_name, filename):
 
 
 
-# Start of BOTO3
-AWS_ACCESS_KEY_ID = st.secrets["AWS_ACCESS_KEY_ID"]
-AWS_SECRET_ACCESS_KEY = st.secrets["AWS_SECRET_ACCESS_KEY"] 
-BUCKET_NAME = st.secrets["BUCKET_NAME"]
 
 # Initialize S3 client
 
