@@ -263,121 +263,108 @@ print("\n\nRELOAD!!  RELOAD!!")
 
 
 
+# Initialize session state variables
+if "enable_ai_generate_skills" not in st.session_state:
+    st.session_state["enable_ai_generate_skills"] = False
+if "enable_generate_data" not in st.session_state:
+    st.session_state["enable_generate_data"] = False
+if "ORIGINAL_DF" not in st.session_state:
+    st.session_state["ORIGINAL_DF"] = None
+if "narrow_search_input" not in st.session_state:
+    st.session_state["narrow_search_input"] = ""
+
+
+#############################
+# >-- START OF SIDE BAR <-- #
 #############################
 # >-- START OF SIDE BAR <-- #
 with st.sidebar:
-  st.title("Sidebar Menu")
-  st.write("This is some content in the sidebar")
+    st.title("Sidebar Menu")
+    st.write("This is some content in the sidebar")
 
-  # Initial state (skills hidden)
-  show_skills = False
+    # Get user input for job title
+    job_title = st.text_input("Enter your job title:")
+    is_disabled = True  # Initial state
 
-  # Get user input for job title
-  job_title = st.text_input("Enter your job title:")
-  
-  is_disabled = True  # Initial state
-  # Button to enable/disable text area of Skills
-  
-  
-  file_exists = file_exists_in_s3(BUCKET_NAME, f"original_{job_title}.csv")
-    # print(f"File original_'{job_title}' already exists. Skipping...")
-    # st.write("Scraped!")
-  if (job_title != ""):
-    is_disabled = False
-    if file_exists == False:
-      # subprocess.run(["python", "scrape.py", job_title])
-      st.write("File doesn't exist in our database. Will be scraping job postings from indeed.com for a moment...")
-      ORIGINAL_DF = start_scrape_jobs(job_title)
-    elif file_exists == True:
-      # ORIGINAL_DF = read_csv(f"csv\\original_{job_title}.csv")
-      ORIGINAL_DF = download_csv_from_s3(BUCKET_NAME, f"original_{job_title}.csv")
-    st.write(f"{ORIGINAL_DF['title'].count()} jobs were scraped from Indeed.com")
+    # Check if file exists in S3
+    if job_title:
+        is_disabled = False
+        file_exists = file_exists_in_s3(BUCKET_NAME, f"original_{job_title}.csv")
 
-  #--> Start of Job Skill TextArea
-  if (st.session_state.get('enable_ai_generate_skills')) and (job_title != ""):
-    st.session_state['name'] = start_ai_generate_skills(job_title)
-  st.button('Auto Skills Generate', key='enable_ai_generate_skills', help="AI Powered")
-  st.button('Generate Data/Chart', key='enable_generate_data', disabled=is_disabled,)
-  skills_list_txtarea = st.text_area("Skills:", height=500, key='name', disabled=is_disabled,
-                                        help="Input your skills here \nor click 'AI GENERATE SKILLS' to automatically generate skills for you")
-  #--> End of Job Skill TextArea
+        if not file_exists:
+            st.write("File doesn't exist in our database. Scraping job postings from Indeed.com...")
+            st.session_state["ORIGINAL_DF"] = start_scrape_jobs(job_title)
+        else:
+            st.session_state["ORIGINAL_DF"] = download_csv_from_s3(BUCKET_NAME, f"original_{job_title}.csv")
 
+        if st.session_state["ORIGINAL_DF"] is not None:
+            st.write(f"{st.session_state['ORIGINAL_DF']['title'].count()} jobs were scraped from Indeed.com.")
 
-  #--> START OF BIGRAM ANALYSIS
-  # This should only be enabled if the "st.button" Generate Data is clicked
-  narrow_search_exists = st.session_state.get('narrow_search_input')
-  if st.session_state.get('enable_generate_data') or narrow_search_exists:
-    start_main_function_analysis(ORIGINAL_DF)
-  #--> END OF BIGRAM ANALYSIS
-  
-  
-# ^-- End of Sidebar --^ #
-##########################
-##########################
+    # Auto Skills Generate Button
+    if st.button("Auto Skills Generate", key="enable_ai_generate_skills", help="AI Powered"):
+        st.session_state["enable_ai_generate_skills"] = True
+        if job_title:
+            st.session_state["name"] = start_ai_generate_skills(job_title)
 
+    # Generate Data/Chart Button
+    if st.button("Generate Data/Chart", key="enable_generate_data", disabled=is_disabled):
+        st.session_state["enable_generate_data"] = True
 
+    # Skills Text Area
+    st.text_area(
+        "Skills:",
+        height=500,
+        key="name",
+        disabled=is_disabled,
+        help="Input your skills here or click 'AI Generate Skills' to generate skills automatically.",
+    )
+
+    # Start Bigram Analysis
+    if st.session_state.get("enable_generate_data"):
+        start_main_function_analysis(st.session_state["ORIGINAL_DF"])
 
 ###########################
 # Main Menu Section Below #
-st.markdown("""# Mandaue City Job-Skills Real Time Analysis
-            """)
+st.markdown("""# Mandaue City Job-Skills Real-Time Analysis""")
 
 tabs = st.tabs(["Table Chart", "Bar Chart", "Line Chart"])
-if SIGNAL == "Skills Analyzed Done":
-  # df2 = pd.read_csv(f"csv\\jobSkills_{job_title}.csv")
-  # df = pd.read_csv(f"csv\\original_{job_title}.csv")
-  LENGTH_JOBS = ORIGINAL_DF['title'].count()
-  LENGTH_SKILLS = JOBSKILLS_DF['jobSkills'].count()
 
-  # Display content based on selected tab
-  # THE CODES OF CHARTS ARE HERE
-  if JOBSKILLS_DF.empty:
-    print("Empty Values")
-  else:
-    # Table Chart
+if st.session_state.get("enable_generate_data"):
+    ORIGINAL_DF = st.session_state["ORIGINAL_DF"]
+    LENGTH_JOBS = ORIGINAL_DF["title"].count()
+
     with tabs[0]:
-      left, right = st.columns(2)
-      with left:
-        st.markdown("Skills in-demand")
+        st.markdown("### Skills In-Demand")
         tableChartExistingTrendSkills(JOBSKILLS_DF)
-      with right:
-        st.markdown("Zero demand of skills")
+
+        st.markdown("### Zero Demand of Skills")
         tableChartNotExistingTrendSkills(JOBSKILLS_DF)
-      
-      top_skill = JOBSKILLS_DF['jobSkills'].iloc[0]
-      top_skill2 = JOBSKILLS_DF['jobSkills'].iloc[1]
-      top_skill3 = JOBSKILLS_DF['jobSkills'].iloc[2]
 
+        top_skills = JOBSKILLS_DF["jobSkills"].head(3).tolist()
 
-      st.header("Narrow down your search here: ")
-      st.write("Search the jobs that was mentioned as top skills ")
-      narrow_search_job_desc = \
-        st.text_input(f"""
-          \nTry searching one of the top skill of {job_title}: "{top_skill}" or "{top_skill2}" or "{top_skill3}
-          \nExample: 
-          \nIf you search for {top_skill}, 
-          \nthen the table below will only show job links that has {top_skill} as a skill needed for that job"
-""", placeholder=f"Try typing {top_skill}", key="narrow_search_input")
-      st.write("\n\n\n")
-      df_narrowed = ORIGINAL_DF
-      # Below is filtering of job search based on skill inputted by user 
-      if (narrow_search_job_desc != ""):
-          # Initialize counts dictionary
-          skill_counts = {narrow_search_job_desc.lower(): 0}
-          matched_jobs = []  # List to keep track of matched jobs
+        st.header("Narrow Down Your Search")
+        st.write(f"Try searching one of the top skills for {job_title}: {', '.join(top_skills)}")
 
-          # Iterate through the lemmatized_text column to count skill occurrences
-          for job_description in df_narrowed['lemmatized_text']:
-              counts = count_skill_occurrences(job_description, narrow_search_job_desc.lower())
-              skill_counts[narrow_search_job_desc.lower()] += counts[narrow_search_job_desc.lower()]
+        # Search Input
+        narrow_search_job_desc = st.text_input(
+            "Search Skills:",
+            placeholder=f"Try typing {top_skills[0]}",
+            key="narrow_search_input",
+        )
 
-              # Check if the count for the skill is greater than 0
-              matched_jobs.append(counts[narrow_search_job_desc.lower()] > 0)
-          
-          df_narrowed = df_narrowed[matched_jobs]
+        # Filter by user input
+        if narrow_search_job_desc:
+            skill_counts = {narrow_search_job_desc.lower(): 0}
+            matched_jobs = []
 
-          st.write(f"{skill_counts[narrow_search_job_desc.lower()]} jobs found that contain '{narrow_search_job_desc}' as a skill for {job_title}")
-      st.dataframe(df_narrowed, hide_index=True, width=1500, height=300)
+            for job_description in ORIGINAL_DF["lemmatized_text"]:
+                counts = count_skill_occurrences(job_description, narrow_search_job_desc.lower())
+                skill_counts[narrow_search_job_desc.lower()] += counts[narrow_search_job_desc.lower()]
+                matched_jobs.append(counts[narrow_search_job_desc.lower()] > 0)
+
+            df_narrowed = ORIGINAL_DF[matched_jobs]
+            st.write(f"{skill_counts[narrow_search_job_desc.lower()]} jobs found with '{narrow_search_job_desc}' as a skill.")
+            st.dataframe(df_narrowed, hide_index=True, width=1500, height=300)
 
     # Bar Chart
     with tabs[1]: 
