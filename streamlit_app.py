@@ -8,15 +8,7 @@ nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
 
-# Check if the NLTK data files are available
-try:
-    nltk.data.find('tokenizers/punkt')
-    nltk.data.find('corpora/stopwords')
-    nltk.data.find('corpora/wordnet')
-    st.write("NLTK data files are ready!")
-except LookupError as e:
-    st.write("NLTK data files are missing! Please check the repository path.")
-    exit(1)
+
 
 def tokenize_lemmatize(text):
     from re import sub
