@@ -224,7 +224,7 @@ def upload_csv_to_s3(dataframe, bucket_name, filename):
     dataframe.to_csv(csv_buffer, index=False)  # Save DataFrame to CSV format in the buffer
     csv_buffer.seek(0)
 
-    s3_client.put_object(Body=csv_buffer.getvalue(), Bucket=bucket_name, Key=filename)
+    s3_client.put_object(Body=csv_buffer.getvalue(), Bucket=bucket_name, Key=f"{filename}.csv")
 
 
 
