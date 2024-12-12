@@ -306,7 +306,8 @@ with st.sidebar:
   #--> START OF BIGRAM ANALYSIS
   # This should only be enabled if the "st.button" Generate Data is clicked
   narrow_search_exists = st.session_state.get('narrow_search_input')
-  if st.session_state.get('enable_generate_data') or narrow_search_exists:
+  if st.session_state.get('enable_generate_data'):
+  # if st.session_state.get('enable_generate_data') or narrow_search_exists:
     start_main_function_analysis(ORIGINAL_DF)
   #--> END OF BIGRAM ANALYSIS
   
@@ -377,9 +378,7 @@ if SIGNAL == "Skills Analyzed Done":
           df_narrowed = df_narrowed[matched_jobs]
 
           st.write(f"{skill_counts[narrow_search_job_desc.lower()]} jobs found that contain '{narrow_search_job_desc}' as a skill for {job_title}")
-          st.dataframe(df_narrowed, hide_index=True, width=1500, height=300)
-      else:
-          st.dataframe(df_narrowed, hide_index=True, width=1500, height=300)
+      st.dataframe(df_narrowed, hide_index=True, width=1500, height=300)
 
     # Bar Chart
     with tabs[1]: 
