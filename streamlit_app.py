@@ -276,15 +276,28 @@ if "narrow_search_input" not in st.session_state:
 
 #############################
 # >-- START OF SIDE BAR <-- #
-#############################
-# >-- START OF SIDE BAR <-- #
+
+# Initialize session state variables
+if "ai_generate_skills_triggered" not in st.session_state:
+    st.session_state["ai_generate_skills_triggered"] = False
+
+if "enable_generate_data" not in st.session_state:
+    st.session_state["enable_generate_data"] = False
+
+if "ORIGINAL_DF" not in st.session_state:
+    st.session_state["ORIGINAL_DF"] = None
+
+if "narrow_search_input" not in st.session_state:
+    st.session_state["narrow_search_input"] = ""
+
+# Sidebar
 with st.sidebar:
     st.title("Sidebar Menu")
     st.write("This is some content in the sidebar")
 
-    # Get user input for job title
+    # Job Title Input
     job_title = st.text_input("Enter your job title:")
-    is_disabled = True  # Initial state
+    is_disabled = not job_title  # Disable buttons if job_title is empty
 
     # Check if file exists in S3
     if job_title:
@@ -302,9 +315,11 @@ with st.sidebar:
 
     # Auto Skills Generate Button
     if st.button("Auto Skills Generate", key="enable_ai_generate_skills", help="AI Powered"):
-        st.session_state["enable_ai_generate_skills"] = True
-        if job_title:
-            st.session_state["name"] = start_ai_generate_skills(job_title)
+        st.session_state["ai_generate_skills_triggered"] = True
+
+    # Trigger AI Generate Skills Logic
+    if st.session_state["ai_generate_skills_triggered"] and job_title:
+        st.session_state["name"] = start_ai_generate_skills(job_title)
 
     # Generate Data/Chart Button
     if st.button("Generate Data/Chart", key="enable_generate_data", disabled=is_disabled):
@@ -316,12 +331,13 @@ with st.sidebar:
         height=500,
         key="name",
         disabled=is_disabled,
-        help="Input your skills here or click 'AI Generate Skills' to generate skills automatically.",
+        help="Input your skills here or click 'Auto Skills Generate' to generate skills automatically.",
     )
 
     # Start Bigram Analysis
     if st.session_state.get("enable_generate_data"):
         start_main_function_analysis(st.session_state["ORIGINAL_DF"])
+
 
 ###########################
 # Main Menu Section Below #
