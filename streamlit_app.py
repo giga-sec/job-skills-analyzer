@@ -134,6 +134,46 @@ def barChartAutomatic(dataframe, index_start, index_end):
 ###############################
 
 
+
+####################
+####################
+## Start of BOTO3 ##
+def file_exists_in_s3(bucket_name, filename):
+    from botocore.exceptions import ClientError
+    try:
+        s3_client.head_object(Bucket=bucket_name, Key=filename)
+        print("file_exists_in_s3: True")
+        return True
+    except ClientError as e:
+        # If a 404 error is raised, the file does not exist
+        if e.response['Error']['Code'] == '404':
+            print("file_exists_in_s3: False")
+            return False
+        # For other errors, you might want to raise an exception
+        else:
+            raise e
+
+def download_csv_from_s3(bucket_name, filename):
+    # response = s3_client.get_object(Bucket='csvfilesforjobs', Key=filename)
+    # return response['Body'].read()    
+    response = s3_client.get_object(Bucket=bucket_name, Key=filename)
+    return response['Body'].read()
+
+def upload_csv_to_s3(dataframe, bucket_name, filename):
+    from io import StringIO
+    csv_buffer = StringIO()
+    dataframe.to_csv(csv_buffer, index=False)  # Save DataFrame to CSV format in the buffer
+    csv_buffer.seek(0)
+
+    s3_client.put_object(Body=csv_buffer.getvalue(), Bucket=bucket_name, Key=filename)
+
+## End of BOTO3 ##
+##################
+##################
+
+
+
+
 def start_ai_generate_skills(job_title):
   from openai import OpenAI
   client = OpenAI(api_key = st.secrets["API_KEY"])
