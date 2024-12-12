@@ -26,7 +26,7 @@ from os import path
 # # Ensure necessary NLTK data is downloaded
 # check_and_download_nltk_data()
 
-from nltk.data import path.append
+from nltk.data import path
 from nltk import download
 path.append('./nltkdata')
 download('wordnet')
