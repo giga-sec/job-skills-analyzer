@@ -262,17 +262,6 @@ print("\n\nRELOAD!!  RELOAD!!")
 
 
 
-# Initialize session state variables
-if "enable_ai_generate_skills" not in st.session_state:
-    st.session_state["enable_ai_generate_skills"] = False
-if "enable_generate_data" not in st.session_state:
-    st.session_state["enable_generate_data"] = False
-if "ORIGINAL_DF" not in st.session_state:
-    st.session_state["ORIGINAL_DF"] = None
-if "narrow_search_input" not in st.session_state:
-    st.session_state["narrow_search_input"] = ""
-
-
 #############################
 # >-- START OF SIDE BAR <-- #
 with st.sidebar:
