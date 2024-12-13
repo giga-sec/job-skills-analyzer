@@ -299,7 +299,7 @@ with st.sidebar:
   st.button('Generate Data/Chart', key='enable_generate_data', disabled=is_disabled,)
   skills_list_txtarea = st.text_area("Skills:", height=500, key='name', disabled=is_disabled,
                                         help="Input your skills here \nor click 'AI GENERATE SKILLS' to automatically generate skills for you")
-  #--> End of Job Skill TextArea
+  #--> End of Job Skill TextArea/
 
 
   #--> START OF BIGRAM ANALYSIS

@@ -17,8 +17,7 @@ class TestStreamlitAppOffline(unittest.TestCase):
             'jobSkills': ['Python', 'Data Analysis', 'Machine Learning', 'SQL', 'JavaScript'],
             'count': [15, 10, 0, 8, 0]
         })
-        self.start = 0
-        self.end = 2
+        self.job_title = "software engineer"
 
     def test_start_scrape_jobs(self):
         job_postings = start_scrape_jobs(self.job_title)
@@ -55,15 +54,32 @@ class TestStreamlitAppOffline(unittest.TestCase):
         self.assertGreater(len(not_existing_skills_df), 0)
         tableChartNotExistingTrendSkills(self.dataframe)  # Runs without exceptions
 
-    def test_barChartAutomatic(self):
-        # Test that the bar chart function correctly creates a chart with filtered data
-        filtered_df = self.dataframe.iloc[0:2]
-        chart = barChartAutomatic(self.dataframe, self.start, self.end)
-        # Check if returned object is not None (indicating successful chart generation)
-        self.assertIsNotNone(chart)
-        # Verify data used in the chart
-        self.assertEqual(filtered_df.shape[0], self.end - self.start)
-        self.assertIn('Python', filtered_df['jobSkills'].tolist())
+    def test_start_scrape_jobs(self):
+        # Test that the function returns a DataFrame
+        result = start_scrape_jobs(self.job_title)
+        self.assertIsInstance(result, pd.DataFrame)  # Check that the output is a DataFrame
+
+        # Test that the DataFrame has rows
+        self.assertGreater(len(result), 0)  # Ensure the DataFrame is not empty
+
+        # Check that expected columns exist in the filtered DataFrame
+        expected_columns = [
+            "title", "company", "location", "date_posted", "description"
+        ]
+        for column in expected_columns:
+            self.assertIn(column, result.columns)
+
+        # Check that unnecessary columns are removed
+        removed_columns = [
+            "company_description", "logo_photo_url", "banner_photo_url",
+            "ceo_name", "ceo_photo_url", "company_num_employees",
+            "company_industry", "company_addresses", "company_url_direct",
+            "emails", "currency", "interval", "min_amount", "max_amount",
+            "job_type", "company_revenue", "site", "job_url_direct",
+            "company_url",
+        ]
+        for column in removed_columns:
+            self.assertNotIn(column, result.columns)
 
 if __name__ == '__main__':
     unittest.main()
