@@ -8,7 +8,7 @@ import io
 import nltk
 nltk.download("wordnet")
 nltk.download("stopwords")
-
+nltk.download('punkt_tab')
 
 def tokenize_lemmatize(text):
     from re import sub
