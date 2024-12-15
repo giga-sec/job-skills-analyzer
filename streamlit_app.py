@@ -187,14 +187,7 @@ def start_scrape_jobs(job):
   print(f"Found {len(jobs)} jobs")
   print(jobs.head())
 
-  columns_to_remove = [
-      "company_description", "logo_photo_url", "banner_photo_url",
-      "ceo_name", "ceo_photo_url", "company_num_employees",
-      "company_industry", "company_addresses", "company_url_direct",
-      "emails", "currency", "interval", "min_amount", "max_amount",
-      "job_type", "company_revenue", "site", "job_url_direct", "salary_source",
-      "company_url", "job_level", "job_function", "listing_type", "company_logo"
-  ]
+
 
   jobs_filtered = jobs.drop(columns_to_remove, axis=1, errors='ignore')
   upload_csv_to_s3(jobs_filtered, BUCKET_NAME, filename)
