@@ -193,7 +193,7 @@ def start_scrape_jobs(job):
       "company_industry", "company_addresses", "company_url_direct",
       "emails", "currency", "interval", "min_amount", "max_amount",
       "job_type", "company_revenue", "site", "job_url_direct",
-      "company_url",
+      "company_url", "job_level", "job_function", "listing_type", "company_logo",
   ]
 
   jobs_filtered = jobs.drop(columns_to_remove, axis=1, errors='ignore')
