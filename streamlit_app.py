@@ -136,28 +136,28 @@ def barChartAutomatic(dataframe, index_start, index_end):
 
 
 def start_ai_generate_skills(job_title):
-  # from openai import OpenAI
-  # client = OpenAI(api_key = st.secrets["API_KEY"])
-  # completion = client.chat.completions.create(
-  #     model="gpt-4o-mini",
-  #     messages=[
-  #         {"role": "system", "content": "You are a Job Skills Generator."},
-  #         {
-  #             "role": "user",
-  #             "content": f"""
-  #               Give me strictly 100 skills needed for {job_title}
-  #               No explanation.
-  #               Separate skills with commas.
-  #               One to Three Words only. Acronyms are allowed 
-  #               Strictly separate acronym and definition
-  #               Correct: Content Management System, CMS
-  #               Incorrect: Content Management System (CMS)"""
-  #         }
-  #     ]
-  # )
-  # print(completion.choices[0].message)
-  # return completion.choices[0].message.content
-  return "Java, Python, C++, JavaScript, TypeScript, SQL, NoSQL, Git, GitHub, GitLab, Agile, Scrum, Kanban, AWS, Azure, GCP, Docker, Kubernetes, CI/CD, Jenkins, REST API, GraphQL, HTML, CSS, React, Angular, Vue.js, Node.js, Express.js, Spring Boot, Hibernate, ORM, TDD, Unit Testing, Integration Testing, Data Structures, Algorithms, Design Patterns, OOP, Functional Programming, Microservices, Serverless, Linux, Shell Scripting, Bash, PowerShell, Performance Optimization, Refactoring, Code Review, Debugging, Troubleshooting, Scalability, Security, Authentication, Authorization, Encryption, HTTPS, SSL, TLS, Database Design, Caching, Load Balancing, Networking, TCP/IP, HTTP, WebSockets, Responsive Design, UX, UI, Accessibility, Internationalization, Localization"
+  from openai import OpenAI
+  client = OpenAI(api_key = st.secrets["API_KEY"])
+  completion = client.chat.completions.create(
+      model="gpt-4o-mini",
+      messages=[
+          {"role": "system", "content": "You are a Job Skills Generator."},
+          {
+              "role": "user",
+              "content": f"""
+                Give me strictly 100 skills needed for {job_title}
+                No explanation.
+                Separate skills with commas.
+                One to Three Words only. Acronyms are allowed 
+                Strictly separate acronym and definition
+                Correct: Content Management System, CMS
+                Incorrect: Content Management System (CMS)"""
+          }
+      ]
+  )
+  print(completion.choices[0].message)
+  return completion.choices[0].message.content
+  # return "Java, Python, C++, JavaScript, TypeScript, SQL, NoSQL, Git, GitHub, GitLab, Agile, Scrum, Kanban, AWS, Azure, GCP, Docker, Kubernetes, CI/CD, Jenkins, REST API, GraphQL, HTML, CSS, React, Angular, Vue.js, Node.js, Express.js, Spring Boot, Hibernate, ORM, TDD, Unit Testing, Integration Testing, Data Structures, Algorithms, Design Patterns, OOP, Functional Programming, Microservices, Serverless, Linux, Shell Scripting, Bash, PowerShell, Performance Optimization, Refactoring, Code Review, Debugging, Troubleshooting, Scalability, Security, Authentication, Authorization, Encryption, HTTPS, SSL, TLS, Database Design, Caching, Load Balancing, Networking, TCP/IP, HTTP, WebSockets, Responsive Design, UX, UI, Accessibility, Internationalization, Localization"
 
 
 def start_scrape_jobs(job):
