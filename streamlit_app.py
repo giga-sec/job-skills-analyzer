@@ -5,6 +5,9 @@ from plotly.express import line, bar
 import boto3
 import io
 
+import nltk
+nltk.download("wordnet")
+
 
 def tokenize_lemmatize(text):
     from re import sub
