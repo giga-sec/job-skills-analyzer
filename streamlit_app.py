@@ -7,6 +7,7 @@ import io
 
 import nltk
 nltk.download("wordnet")
+nltk.download("stopwords")
 
 
 def tokenize_lemmatize(text):
