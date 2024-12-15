@@ -404,7 +404,7 @@ if SIGNAL == "Skills Analyzed Done":
       df2_top20 = JOBSKILLS_DF.iloc[0:20]
       inc_length_skills = LENGTH_SKILLS
       fig = line(df2_top20, x="jobSkills", y="count", 
-                    title=f"Line Chart - Top 20 Skills for {job_title} in Cebu City", 
+                    title=f"Line Chart - Top 20 Skills for {job_title} in Mandaue City", 
                     color="jobSkills", markers=True)
       # fig.update_traces(textposition="middle center", text=df2_top20["count"].astype(str))
       st.plotly_chart(fig, use_container_width=True)
