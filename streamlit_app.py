@@ -290,7 +290,7 @@ with st.sidebar:
         if ORIGINAL_DF.empty:
           st.write("No jobs found")
           continue
-      if file_exists == True:
+      elif file_exists == True:
         # ORIGINAL_DF = read_csv(f"csv\\original_{job_title}.csv")
         ORIGINAL_DF = download_csv_from_s3(BUCKET_NAME, f"original_{job_title}.csv")
       st.write(f"{ORIGINAL_DF['title'].count()} jobs were scraped from Indeed.com")
