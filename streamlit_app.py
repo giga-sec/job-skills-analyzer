@@ -269,10 +269,11 @@ with st.sidebar:
   show_skills = False
 
   file_exists = False
+  
+  job_title = st.text_input("Enter your job title:")
 
   while True:
     # Get user input for job title
-    job_title = st.text_input("Enter your job title:")
     
     is_disabled = True  # Initial state
     # Button to enable/disable text area of Skills
