@@ -289,18 +289,19 @@ with st.sidebar:
       ORIGINAL_DF = download_csv_from_s3(BUCKET_NAME, f"original_{job_title}.csv")
     # Only continue if the DataFrame is not empty
     if not ORIGINAL_DF.empty:
-        st.write(f"{ORIGINAL_DF['title'].count()} jobs were scraped from Indeed.com")
+      st.write(f"{ORIGINAL_DF['title'].count()} jobs were scraped from Indeed.com")
+      #--> Start of Job Skill TextArea
+      if (st.session_state.get('enable_ai_generate_skills')) and (job_title != ""):
+        st.session_state['name'] = start_ai_generate_skills(job_title)
+      st.button('Auto Skills Generate', key='enable_ai_generate_skills', help="AI Powered")
+      st.button('Generate Data/Chart', key='enable_generate_data', disabled=is_disabled,)
+      skills_list_txtarea = st.text_area("Skills:", height=500, key='name', disabled=is_disabled,
+                                            help="Input your skills here \nor click 'AI GENERATE SKILLS' to automatically generate skills for you")
+      #--> End of Job Skill TextArea/
     else:
-        st.write("Please try searching with a different job title.")
+      st.write("Please try searching with a different job title.")
 
-  #--> Start of Job Skill TextArea
-  if (st.session_state.get('enable_ai_generate_skills')) and (job_title != ""):
-    st.session_state['name'] = start_ai_generate_skills(job_title)
-  st.button('Auto Skills Generate', key='enable_ai_generate_skills', help="AI Powered")
-  st.button('Generate Data/Chart', key='enable_generate_data', disabled=is_disabled,)
-  skills_list_txtarea = st.text_area("Skills:", height=500, key='name', disabled=is_disabled,
-                                        help="Input your skills here \nor click 'AI GENERATE SKILLS' to automatically generate skills for you")
-  #--> End of Job Skill TextArea/
+  
 
 
   #--> START OF BIGRAM ANALYSIS
