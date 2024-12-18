@@ -287,7 +287,11 @@ with st.sidebar:
     elif file_exists == True:
       # ORIGINAL_DF = read_csv(f"csv\\original_{job_title}.csv")
       ORIGINAL_DF = download_csv_from_s3(BUCKET_NAME, f"original_{job_title}.csv")
-    st.write(f"{ORIGINAL_DF['title'].count()} jobs were scraped from Indeed.com")
+    # Only continue if the DataFrame is not empty
+    if not ORIGINAL_DF.empty:
+        st.write(f"{ORIGINAL_DF['title'].count()} jobs were scraped from Indeed.com")
+    else:
+        st.write("Please try searching with a different job title.")
 
   #--> Start of Job Skill TextArea
   if (st.session_state.get('enable_ai_generate_skills')) and (job_title != ""):
