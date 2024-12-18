@@ -289,9 +289,11 @@ with st.sidebar:
       ORIGINAL_DF = download_csv_from_s3(BUCKET_NAME, f"original_{job_title}.csv")
     # Only continue if the DataFrame is not empty
     if not ORIGINAL_DF.empty:
+        print("Running")
         st.write(f"{ORIGINAL_DF['title'].count()} jobs were scraped from Indeed.com")
         # Rest of your code for processing and displaying job listings continues here...
     else:
+        print("Not Running")
         st.write("Please try searching with a different job title.")
 
   #--> Start of Job Skill TextArea
