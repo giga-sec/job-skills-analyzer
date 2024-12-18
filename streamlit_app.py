@@ -301,7 +301,7 @@ with st.sidebar:
         #--> End of Job Skill TextArea/
     else:
         print("Not Running")
-        st.write("ERROR: Please try searching with a different job title.")
+        st.write("ERROR: No jobs found for {job_title}. Please try searching with a different job title.")
 
 
 
