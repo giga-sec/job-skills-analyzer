@@ -280,13 +280,15 @@ with st.sidebar:
     # st.write("Scraped!")
   if (job_title != ""):
     is_disabled = False
-    if file_exists == False:
+    while file_exists == False:
       # subprocess.run(["python", "scrape.py", job_title])
       st.write("File doesn't exist in our database. Will be scraping job postings from indeed.com for a moment...")
       ORIGINAL_DF = start_scrape_jobs(job_title)
       if ORIGINAL_DF.empty:
         st.write("No jobs found")
-        return
+        continue
+      else:
+        break # Jobs found
     elif file_exists == True:
       # ORIGINAL_DF = read_csv(f"csv\\original_{job_title}.csv")
       ORIGINAL_DF = download_csv_from_s3(BUCKET_NAME, f"original_{job_title}.csv")
