@@ -380,7 +380,15 @@ if SIGNAL == "Skills Analyzed Done":
           df_narrowed = df_narrowed[matched_jobs]
 
           st.write(f"{skill_counts[narrow_search_job_desc.lower()]} jobs found that contain '{narrow_search_job_desc}' as a skill for {job_title}")
-      st.dataframe(df_narrowed, hide_index=True, width=1500, height=300)
+      st.dataframe(df_narrowed, hide_index=True, width=1500, height=300, column_config={
+        "job_url": st.column_config.LinkColumn(
+            "Job URL",
+            help="Click to view job details",
+            validate="^https://ph.indeed.com/viewjob\\?jk=[a-f0-9]+$",
+            max_chars=100,
+            display_text="View Job"
+        ),
+    })
 
     # Bar Chart
     with tabs[1]: 
